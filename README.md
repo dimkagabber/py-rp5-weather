@@ -1,4 +1,4 @@
 py-rp5-weather
 ==============
 
-small and dumb rp5.ru weather page parser
+Small and dumb rp5.ru weather parser
