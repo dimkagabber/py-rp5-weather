@@ -3,10 +3,6 @@
 # version 0.0.1
 __author__ = 'Aleksei Gusev'
 
-# Moscow south weather:
-url = 'http://rp5.ru/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_' \
-      '%D0%B2_%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B5_%28%D1%8E%D0%B3%29'
-
 
 import urllib2
 from HTMLParser import HTMLParser
@@ -63,11 +59,22 @@ class rp5Parser(HTMLParser):
 
 
 if __name__ == '__main__':
+    '''
+    wv_0  - wind speed, meters per second
+    wv_1  - wind speed, kilometers per hour
+    wv_2  - wind speed, miles per hour
+    wv_3  - wind speed, knots
+    wv_4  - wind speed, Bfrt
+    t_0   - temperature, Celsius
+    t_1   - temperature, Fahrenheit
+    '''
+
+    # Moscow south side weather:
+    url = 'http://rp5.ru/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_' \
+          '%D0%B2_%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B5_%28%D1%8E%D0%B3%29'
+
     parser = rp5Parser()
     result = parser.get_url(url)
-
-    # from pprint import pprint
-    # pprint(result)
 
     for k, v in result.items():
         if isinstance(v, tuple):
