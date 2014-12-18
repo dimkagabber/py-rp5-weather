@@ -189,7 +189,7 @@ class rp5ArchiveParser(HTMLParser):
     def _Tse_C_ms(self, t, v):
         # Simple Effective temperature
         # t -2 * v
-        return t + -2 * t
+        return t - 2 * v
 
     def _Twc_C_kmh(self, t, v):
         # # en wiki wind chill canadian, C and km/h http://en.wikipedia.org/wiki/Wind_chill
@@ -308,16 +308,17 @@ class rp5ArchiveParser(HTMLParser):
 
     def phys_n_math(self):
         for data_d in self.weather_data_l:
-            if data_d.get('Ff', {}).get('wv_0') and data_d.get('T', {}).get('t_0'):
+            if data_d.get('Ff', {}).get('wv_0') is not None and data_d.get('T', {}).get('t_0') is not None:
                 data_d['Tse'] = {'t_0': self._Tse_C_ms(data_d['T']['t_0'], data_d['Ff']['wv_0'])}
 
             data_d['Twc'] = {}
-            if data_d.get('T', {}).get('t_0') and data_d.get('Ff', {}).get('wv_1'):
+            if data_d.get('T', {}).get('t_0') is not None and data_d.get('Ff', {}).get('wv_1') is not None:
                 data_d['Twc']['t_0'] = self._Twc_C_kmh(data_d['T']['t_0'], data_d['Ff']['wv_1'])
-            if data_d.get('T', {}).get('t_0') and data_d.get('Ff', {}).get('wv_2'):
+
+            if data_d.get('T', {}).get('t_1') is not None and data_d.get('Ff', {}).get('wv_2') is not None:
                 data_d['Twc']['t_1'] = self._Twc_F_mph(data_d['T']['t_1'], data_d['Ff']['wv_2'])
 
-            if data_d.get('T', {}).get('t_0'):
+            if data_d.get('T', {}).get('t_0') is not None:
                 data_d['Humidex'] = self._Humidex(data_d['T']['t_0'])
 
     def handle_starttag(self, tag, attrs):
@@ -486,6 +487,7 @@ if __name__ == '__main__':
     """
     from pprint import pprint
 
+
     # Moscow weather:
     url_arch = 'http://rp5.ru/Weather_archive_in_Moscow'
     url_arch = 'http://rp5.ru/Weather_archive_in_Vnukovo_(airport)'
@@ -495,7 +497,8 @@ if __name__ == '__main__':
     parser = rp5ArchiveParser()
     result = parser.get_weather(url_arch, date=date)
     parser.phys_n_math()
-    pprint(result[0:2])
+    pprint(result[0])
+
 
     # Moscow weather:
     url = 'http://rp5.ru/Weather_in_Vnukovo_(airport)'
