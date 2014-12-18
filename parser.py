@@ -269,6 +269,19 @@ class rp5ArchiveParser(HTMLParser):
             else:
                 data_d['Ff'] = {'cl': 'Calm, no wind', 'wv_0': '0', 'wv_1': '0', 'wv_2': '0', 'wv_3': '0', 'wv_4': '0'}
 
+            if data_d.get('c'):
+                data_l = []
+                if data_d['c'].get('cc_0'):
+                    data_d['c']['_cc_0'] = str(data_d['c']['cc_0'].split(' (')[-1])
+                    data_l.append(data_d['c']['_cc_0'])
+                if data_d['c'].get('cc_1'):
+                    data_d['c']['_cc_1'] = str(data_d['c']['cc_1'].split(' (')[-1])
+                    data_l.extend(['.', data_d['c']['_cc_1']])
+                if data_d['c'].get('cc_2'):
+                    data_d['c']['_cc_2'] = str(data_d['c']['cc_2'].split(' (')[-1])
+                    data_l.extend(['.', data_d['c']['_cc_2']])
+                data_d['c'].update(self._cloud_cover(data_l))
+
             if data_d.get('N'):
                 # data_d['__N'] = data_d['N']
                 data_d['N'] = self._cloud_cover(data_d['N'])
