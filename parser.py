@@ -175,8 +175,7 @@ class rp5ArchiveParser(HTMLParser):
                     for k, v in data.items():
                         data_d[k] = float(v)
                     return data_d
-                except ValueError as e:
-                    print(e)
+                except Exception as e:
                     return data
 
         return data
@@ -219,7 +218,8 @@ class rp5ArchiveParser(HTMLParser):
                     data_d['cc_0'] = (float(n0_l[0]) + float(n0_l[-1])) / 2
                     data_d['cc_1'] = data_d['cc_0'] / 100
                 except Exception as e:
-                    print(e)
+                    pass
+                    # print('_cloud_cover exception "%s"' % e, data_l)
 
                 if data_split[2][:3].isdigit():
                     data_d['cc_2'] = float(data_split[2][:3])
@@ -263,11 +263,10 @@ class rp5ArchiveParser(HTMLParser):
                             data_d['Ff']['cl_nt'] = data_d['Ff'].pop('cl', None)
                         else:
                             data_d['Ff'][k] = v
-                except ValueError as e:
-                    print(k, v, e)
+                except Exception as e:
                     data_d['Ff'] = data_d['_Ff']
             else:
-                data_d['Ff'] = {'cl': 'Calm, no wind', 'wv_0': '0', 'wv_1': '0', 'wv_2': '0', 'wv_3': '0', 'wv_4': '0'}
+                data_d['Ff'] = {'cl': 'Calm, no wind', 'wv_0': 0.0, 'wv_1': 0.0, 'wv_2': 0.0, 'wv_3': 0.0, 'wv_4': 0.0}
 
             if data_d.get('c'):
                 data_l = []
@@ -512,12 +511,17 @@ if __name__ == '__main__':
     parser.phys_n_math()
     pprint(result[0])
 
+    # # Moscow weather:
+    # url = 'http://rp5.ru/Weather_in_Vnukovo_(airport)'
 
-    # Moscow weather:
-    url = 'http://rp5.ru/Weather_in_Vnukovo_(airport)'
+    # parser = rp5ForecastParser()
+    # result = parser.get_weather(url)
+    # pprint(result)
 
-    parser = rp5ForecastParser()
-    result = parser.get_weather(url)
-    pprint(result)
+    # print('--' * 60)
+    # print('Local time ~%s:00' % result.get('Local time', {}).get('n', ['00'])[0])
+    # print('Temperature %s C' % result.get('Temperature,', {}).get('t_0', [])[0])
+    # print('Feels like %s C' % result.get('Feels like,', {}).get('t_0', [])[0])
+    # print('Wind %s m/s' % result.get('Wind,', {}).get('wv_0', [])[0])
 
 
