@@ -281,6 +281,22 @@ class rp5ArchiveParser(HTMLParser):
                     data_l.extend(['.', data_d['c']['_cc_2']])
                 data_d['c'].update(self._cloud_cover(data_l))
 
+                if isinstance(data_d['c'].get('h_0'), (list, tuple)):
+                    try:
+                        data_d['c']['_h_0'] = data_d['c']['h_0'][0]
+                        data_d['c']['h_0'] = float(str(data_d['c']['h_0'][0]).split(' ')[0])
+                    except Exception as e:
+                        # print('clean cloud cover height exception "%s"' % e)
+                        data_d['c']['_h_0'] = data_d['c']['h_0']
+
+                if isinstance(data_d['c'].get('h_1'), (list, tuple)):
+                    try:
+                        data_d['c']['_h_1'] = data_d['c']['h_1'][0]
+                        data_d['c']['h_1'] = float(str(data_d['c']['h_1'][0]).split(' ')[0])
+                    except Exception as e:
+                        # print('clean cloud cover height exception "%s"' % e)
+                        data_d['c']['_h_1'] = data_d['c']['h_1']
+
             if data_d.get('N'):
                 # data_d['__N'] = data_d['N']
                 data_d['N'] = self._cloud_cover(data_d['N'])
@@ -480,8 +496,8 @@ if __name__ == '__main__':
     Tx  - Maximum air temperature during the past period (not exceeding 12 hours)
     Td  - Dewpoint temperature at a height of 2 metres above the earth's surface
     U   - Relative humidity (%) at a height of 2 metres above the earth's surface
-    N/c - Total cloud cover
-          cc_0 - %; cc_1 - relative; cc_2 - oktas
+    N/c - Total cloud cover and cloud height
+          cc_0 - %; cc_1 - relative; cc_2 - oktas; h_0 - meters; h_1 - feets
     Nh  - Amount of all the CL cloud present or, if no CL cloud is present, the amount of all the CM cloud present
     Ff  - Mean wind speed at a height of 10-12 metres above the earth’s surface
           over the 10-minute period immediately preceding the observation
